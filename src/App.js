@@ -1,25 +1,45 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import ProductCardList from "./ProductCardList";
+import productInfo from "./productInfo";
+import NavBar from "./NavBar";
+import SearchBar from "./SearchBar";
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      productinfo: [],
+      wallet: "",
+      searchfield: "",
+      shoppingCart: []
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ productinfo: productInfo, wallet: 400 });
+  }
+
+  onSearchChange = event => {
+    console.log(event.target.value);
+    this.setState({ searchfield: event.target.value });
+  };
+
   render() {
+    const { searchfield, productinfo, wallet } = this.state;
+    const filteredItems = productinfo
+      .filter(a => a.productQty > 0)
+      .filter(a =>
+        a.productName.toLowerCase().includes(searchfield.toLowerCase())
+      );
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className="f2 center">
+        <NavBar wallet={wallet} />
+        <SearchBar onSearchChange={this.onSearchChange} />
+        <ProductCardList
+          productinfo={filteredItems}
+          searchfield={searchfield}
+        />
       </div>
     );
   }
